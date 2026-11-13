@@ -1,5 +1,6 @@
-#dataset files
-/data/
+#Dataset files
+/data/raw/*
+!/data/raw/.gitkeep
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
