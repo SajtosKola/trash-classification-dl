@@ -130,4 +130,18 @@ plt.savefig(output_path, dpi=150)
 
 print(f"\nDiagram elmentve ide: {output_path}")
 
+print("\n===== OSZTÁLYELOSZLÁS SPLITENKÉNT =====")
+
+for split in SPLITS:
+    counts = split_counts[split]
+    split_total = sum(counts.values())
+
+    print(f"\n{split.upper()} ({split_total} kép):")
+
+    for category in CLASSES:
+        count = counts[category]
+        percentage = count / split_total * 100
+
+        print(f"{category}: {count} kép ({percentage:.2f}%)")
+
 plt.show()
