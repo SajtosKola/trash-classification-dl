@@ -6,6 +6,16 @@ from torchvision import transforms
 
 # Alap transzformációk a tanítóképekhez
 train_transform = transforms.Compose([
+    # Véletlenszerű vízszintes tükrözés
+    transforms.RandomHorizontalFlip(p=0.5),
+    # Véletlenszerű forgatás -10 és +10 fok között
+    transforms.RandomRotation(degrees=10),
+    # Fényerő és kontraszt enyhe módosítása
+    transforms.ColorJitter(
+        brightness=0.15,
+        contrast=0.15
+    ),
+
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
     transforms.Normalize(
