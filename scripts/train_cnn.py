@@ -80,6 +80,13 @@ optimizer = torch.optim.Adam(
     lr=0.001
 )
 
+scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+    optimizer,
+    mode="min",
+    factor=0.5,
+    patience=3,
+    min_lr=0.00001
+)
 
 # Alapinformációk
 print("===== CNN TANÍTÁS ELŐKÉSZÍTÉSE =====")
@@ -197,12 +204,12 @@ def validate_one_epoch(model, loader, criterion, device):
     return epoch_loss, epoch_accuracy, epoch_f1
 
 # Tanítási beállítások
-NUM_EPOCHS = 15
+NUM_EPOCHS = 40
 
 CHECKPOINT_DIR = PROJECT_ROOT / "models"
 CHECKPOINT_DIR.mkdir(parents=True, exist_ok=True)
 
-BEST_MODEL_PATH = CHECKPOINT_DIR / "best_cnn.pth"
+BEST_MODEL_PATH = CHECKPOINT_DIR / "best_cnn_40epochs.pth"
 
 best_val_f1 = -1.0
 best_epoch = 0
@@ -229,6 +236,8 @@ for epoch in range(1, NUM_EPOCHS + 1):
         device
     )
 
+    scheduler.step(val_loss)
+
     print(f"\nEpoch [{epoch}/{NUM_EPOCHS}]")
 
     print(
@@ -241,6 +250,9 @@ for epoch in range(1, NUM_EPOCHS + 1):
         f"Valid Accuracy: {val_accuracy * 100:.2f}% | "
         f"Valid Macro F1: {val_f1:.4f}"
     )
+
+    current_lr = optimizer.param_groups[0]["lr"]
+    print(f"Learning Rate: {current_lr:.6f}")
 
     # Legjobb modell mentése Macro F1 alapján
     if val_f1 > best_val_f1:
